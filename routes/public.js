@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Cadastro
 router.post("/cadastro", async (req, res) => {
@@ -52,7 +53,9 @@ router.post("/login", async (req, res) => {
 
     // gerar o token JWT
 
-    res.status(200).json(user);
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1m" });
+
+    res.status(200).json(token);
   } catch (error) {
     res.status(500).json({ message: "erro no servidor tente novamente" });
   }
